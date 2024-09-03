@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
 db = SQLAlchemy(app)
 
+#Database models
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -25,6 +26,7 @@ class Employee(db.Model):
 with app.app_context():
     db.create_all()
 
+#Route to load data from excel file
 @app.route('/load_data', methods=['POST'])
 def load_data():
     try:
@@ -42,6 +44,7 @@ def load_data():
         companies = {}
         employees = []
 
+        #Bulk upload to avoid recurring queries of same data
         for row in worksheet.iter_rows(values_only=True, min_row=2):
             employee_id, first_name, last_name, phone_number, company_name, salary, manager_id, department_id = row
 
